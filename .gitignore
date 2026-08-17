@@ -1,0 +1,6 @@
+# Environment/config secrets
+application.properties
+.env
+
+.idea/
+*.iml
