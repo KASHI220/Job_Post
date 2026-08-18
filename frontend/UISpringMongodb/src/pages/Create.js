@@ -1,137 +1,165 @@
 import React, { useState } from "react";
+import axios from "axios";
+
 import {
-  Typography,
-  TextField,
-  Button,
-  Paper,
   Box,
+  Button,
+  TextField,
+  Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-const initial = { profile: "", exp: 0, techs: [], desc:"" };
+
+import { Link, useNavigate } from "react-router-dom";
+
 
 const Create = () => {
-    const skillSet = [
-        {
-          name: "Javascript"
-        },
-        {
-          name: "Java"
-        },
-        {
-          name: "Python"
-        },
-        {
-          name: "Django"
-        },
-        {
-          name: "Rust"
-        }
-      ];
-  const navigate = useNavigate();
-  const [form, setForm] = useState(initial);
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const [profile, setProfile] = useState("");
+  const [desc, setDesc] = useState("");
+  const [exp, setExp] = useState("");
+  const [tech, setTech] = useState("");
+
+
+  const handleSubmit = async (e) => {
+
     e.preventDefault();
-    fetch("http://localhost:8080/post", {
-      method: "POST", // or 'PUT'
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(form),
-    })
-      .then((response) => console.log(response))
-      .then((data) => {
-        console.log("Success:", data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-      navigate('/employee/feed');
+
+    try {
+
+      const job = {
+        profile: profile,
+        desc: desc,
+        exp: Number(exp),
+
+        // Convert:
+        // "java, spring, mongodb"
+        //
+        // into:
+        // ["java", "spring", "mongodb"]
+
+        tech: tech
+          .split(",")
+          .map((item) => item.trim())
+          .filter((item) => item.length > 0),
+      };
+
+
+      console.log("Sending job:", job);
+
+
+      await axios.post(
+        "http://localhost:8080/api/job",
+        job
+      );
+
+
+      alert("Job created successfully!");
+
+      navigate("/employee/feed");
+
+
+    } catch (error) {
+
+      console.error(
+        "Error creating job:",
+        error
+      );
+
+      alert("Failed to create job");
+
+    }
+
   };
 
-  const { profile, exp, desc } = form;
-
-  const handleChange = (e) => {
-    setForm({...form , techs : [...form.techs, e.target.value]});
-  }
 
   return (
-    <Paper sx={{ padding:"2%"}} elevation={3}>
-      <Typography sx={{ margin: "3% auto" }} align="center" variant="h5">
-        Create New Post
+    <Box
+      sx={{
+        width: "50%",
+        margin: "5% auto",
+      }}
+    >
+
+      <Typography
+        variant="h3"
+        align="center"
+        sx={{ marginBottom: "5%" }}
+      >
+        Create Job
       </Typography>
-      <form autoComplete="off" noValidate onSubmit={handleSubmit}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            flexDirection: "column",
-          }}
+
+
+      <form onSubmit={handleSubmit}>
+
+        <TextField
+          fullWidth
+          label="Job Profile"
+          value={profile}
+          onChange={(e) =>
+            setProfile(e.target.value)
+          }
+          sx={{ marginBottom: "3%" }}
+        />
+
+
+        <TextField
+          fullWidth
+          label="Description"
+          multiline
+          rows={4}
+          value={desc}
+          onChange={(e) =>
+            setDesc(e.target.value)
+          }
+          sx={{ marginBottom: "3%" }}
+        />
+
+
+        <TextField
+          fullWidth
+          label="Years of Experience"
+          type="number"
+          value={exp}
+          onChange={(e) =>
+            setExp(e.target.value)
+          }
+          sx={{ marginBottom: "3%" }}
+        />
+
+
+        <TextField
+          fullWidth
+          label="Skills"
+          placeholder="java, spring, mongodb"
+          value={tech}
+          onChange={(e) =>
+            setTech(e.target.value)
+          }
+          sx={{ marginBottom: "3%" }}
+        />
+
+
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{ marginRight: "2%" }}
         >
-          <TextField
-            type="string"
-            sx={{ width: "50%", margin: "2% auto" }}
-            required
-            onChange={(e) => setForm({ ...form, profile: e.target.value })}
-            label="Job-profile"
-            variant="outlined"
-            value={profile}
-          />
-          <TextField
-            min="0"
-            type="number"
-            sx={{ width: "50%", margin: "2% auto" }}
-            required
-            onChange={(e) => setForm({ ...form, exp: e.target.value })}
-            label="Years of Experience"
-            variant="outlined"
-            value={exp}
-          />
-           <TextField
-            type="string"
-            sx={{ width: "50%", margin: "2% auto" }}
-            required
-            multiline
-            rows={4}
-            onChange={(e) => setForm({ ...form, desc: e.target.value })}
-            label="Job-desc"
-            variant="outlined"
-            value={desc}
-          />
-          <Box sx={{ margin:"1% auto"}}>
-          <h3>Please mention required skills</h3>
-         <ul>
-        {skillSet.map(({ name }, index) => {
-          return (
-            <li key={index}>
-              <div >
-                <div>
-                  <input
-                    type="checkbox"
-                    id={`custom-checkbox-${index}`}
-                    name={name}
-                    value={name}
-                    onChange={handleChange}  
-                  />
-                  <label htmlFor={`custom-checkbox-${index}`}>{name}</label>
-                </div>
-              </div>
-            </li>
-          );
-        })}
-       
-      </ul>
-          </Box>
-          <Button
-            sx={{ width: "50%", margin: "2% auto" }}
-            variant="contained"
-            type="submit"
-          >
-            Submit
-          </Button>
-        </Box>
+          Create Job
+        </Button>
+
+
+        <Button variant="outlined">
+
+          <Link to="/">
+            Cancel
+          </Link>
+
+        </Button>
+
       </form>
-    </Paper>
+
+    </Box>
   );
 };
 
