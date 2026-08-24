@@ -1,28 +1,23 @@
-package kashi.Demo.jobSeeker.entity;
+package kashi.Demo.jobSeeker.dto;
 
-import jakarta.persistence.*;
+import org.springframework.stereotype.Component;
 
-
-@Entity
-public class UserS {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long userId;
-
+@Component
+public class JobUsersDto {
+    Long id;
     String name;
-    @Column(unique = true)
-    String email;
     String [] skills;
+    String email;
 
-    public UserS() {
+    public JobUsersDto() {
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getId() {
+        return id;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -40,7 +35,7 @@ public class UserS {
     public void setSkills(String[] skills) {
         this.skills = skills;
     }
-    // Inside UserS.java — Add these methods if they are missing
+
     public String getEmail() {
         return email;
     }
@@ -48,5 +43,4 @@ public class UserS {
     public void setEmail(String email) {
         this.email = email;
     }
-
 }

@@ -1,16 +1,13 @@
 package kashi.Demo.jobSeeker.controller;
 
+import kashi.Demo.jobSeeker.dto.JobUsersDto;
 import kashi.Demo.jobSeeker.entity.UserLogin;
 import kashi.Demo.jobSeeker.service.LoginService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class LoginController {
 
     private final LoginService loginService;
@@ -20,8 +17,8 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserLogin> login (@RequestBody @Validated UserLogin loginRequest) {
-        Student student =loginService.login(loginRequest);
-        return ResponseEntity.ok();
+    public ResponseEntity<JobUsersDto> handleLogin(@RequestBody UserLogin loginRequest) {
+        JobUsersDto authenticatedUser = loginService.login(loginRequest);
+        return ResponseEntity.ok(authenticatedUser);
     }
 }

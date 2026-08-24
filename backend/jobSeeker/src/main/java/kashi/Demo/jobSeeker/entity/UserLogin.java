@@ -8,13 +8,20 @@ public class UserLogin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long loginID;
-
-    @Column(unique = true)
-    private String Email;
-
     private String password;
+    @OneToOne
+    @JoinColumn(name = "email")
+    private UserS userS;
 
     public UserLogin() {
+    }
+
+    public UserS getUserS() {
+        return userS;
+    }
+
+    public void setUserS(UserS userS) {
+        this.userS = userS;
     }
 
     public Long getLoginID() {
@@ -25,13 +32,6 @@ public class UserLogin {
         this.loginID = loginID;
     }
 
-    public String getEmail() {
-        return Email;
-    }
-
-    public void setEmail(String email) {
-        this.Email = email;
-    }
 
     public String getPassword() {
         return password;
