@@ -24,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         // Use the updated relation traversal query method we set up earlier
-        Optional<UserLogin> userOptional = loginRepository.findByEmail(username);
+        Optional<UserLogin> userOptional = loginRepository.findByUserSEmail(username);
 
         if (userOptional.isEmpty()) {
             throw new UsernameNotFoundException("User not found with email: " + username);

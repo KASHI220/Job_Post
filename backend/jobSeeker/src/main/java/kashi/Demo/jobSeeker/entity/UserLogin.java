@@ -4,13 +4,13 @@ import jakarta.persistence.*;
 
 
 @Entity
-public class UserLogin {
+public class    UserLogin {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long loginID;
     private String password;
     @OneToOne
-    @JoinColumn(name = "email")
+    @JoinColumn(name = "user_id", referencedColumnName = "userId")
     private UserS userS;
 
     public UserLogin() {

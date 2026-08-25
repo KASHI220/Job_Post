@@ -1,12 +1,16 @@
 package kashi.Demo.jobSeeker.dto;
 
+import jakarta.persistence.ElementCollection;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class JobUsersDto {
     Long id;
     String name;
-    String [] skills;
+    @ElementCollection
+    private List<String> skills;
     String email;
 
     public JobUsersDto() {
@@ -28,11 +32,12 @@ public class JobUsersDto {
         this.name = name;
     }
 
-    public String[] getSkills() {
+
+    public List<String> getSkills() {
         return skills;
     }
 
-    public void setSkills(String[] skills) {
+    public void setSkills(List<String> skills) {
         this.skills = skills;
     }
 

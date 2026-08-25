@@ -2,6 +2,8 @@ package kashi.Demo.jobSeeker.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 
 @Entity
 public class UserS {
@@ -12,7 +14,8 @@ public class UserS {
     String name;
     @Column(unique = true)
     String email;
-    String [] skills;
+    @ElementCollection
+    private List<String> skills;
 
     public UserS() {
     }
@@ -33,13 +36,14 @@ public class UserS {
         this.name = name;
     }
 
-    public String[] getSkills() {
+    public List<String> getSkills() {
         return skills;
     }
 
-    public void setSkills(String[] skills) {
+    public void setSkills(List<String> skills) {
         this.skills = skills;
     }
+
     // Inside UserS.java — Add these methods if they are missing
     public String getEmail() {
         return email;
