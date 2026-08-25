@@ -35,7 +35,7 @@ public class LoginService {
 
         // 2. Fetch the credentials record from the database
         UserLogin userLoginRecord = loginRepository
-                .findByEmail(email)
+                .findByUserSEmail(email)
                 .orElseThrow(() -> new RuntimeException("User authentication profile not found"));
 
         // 3. Extract the underlying user profile entity
