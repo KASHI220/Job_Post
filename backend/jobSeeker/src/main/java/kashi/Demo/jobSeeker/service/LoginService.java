@@ -1,50 +1,43 @@
 package kashi.Demo.jobSeeker.service;
 
 import kashi.Demo.jobSeeker.dto.JobUsersDto;
-import kashi.Demo.jobSeeker.entity.UserLogin;
+import kashi.Demo.jobSeeker.dto.UserLoginDto;
 import kashi.Demo.jobSeeker.entity.UserS;
-import kashi.Demo.jobSeeker.repository.LoginRepository;
+import kashi.Demo.jobSeeker.repository.RegisterRepo;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 @Service
 public class LoginService {
-    private final AuthenticationManager authenticationManager;
-    private final LoginRepository loginRepository;
 
-    public LoginService(AuthenticationManager authenticationManager,
-                        LoginRepository loginRepository) {
+    private final AuthenticationManager authenticationManager;
+    private final RegisterRepo registerRepo; // Marked as private for proper encapsulation
+
+    public LoginService(AuthenticationManager authenticationManager, RegisterRepo registerRepo) {
         this.authenticationManager = authenticationManager;
-        this.loginRepository = loginRepository;
+        this.registerRepo = registerRepo;
     }
 
-    public JobUsersDto login(UserLogin loginRequest) {
+    public JobUsersDto login(UserLoginDto loginRequest) {
 
-        // Safety check to ensure incoming JSON includes user information
-        if (loginRequest.getUserS() == null || loginRequest.getUserS().getEmail() == null) {
-            throw new RuntimeException("Email information is missing from request payload");
+        // 1. Safety check to ensure incoming JSON includes required credentials
+        if (loginRequest.getPassword() == null || loginRequest.getEmail() == null) {
+            throw new RuntimeException("Email and password credentials are missing from request payload");
         }
 
-        String email = loginRequest.getUserS().getEmail();
+        String email = loginRequest.getEmail();
 
-        // 1. Authenticate email and password using Spring Security
+        // 2. Perform standard authentication checks using your CustomUserDetailsService
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, loginRequest.getPassword())
         );
 
-        // 2. Fetch the credentials record from the database
-        UserLogin userLoginRecord = loginRepository
-                .findByUserSEmail(email)
+        // 3. Fetch the record from the database using the instance variable and correct method name
+        UserS userProfile = registerRepo.findByUserSEmail(email)
                 .orElseThrow(() -> new RuntimeException("User authentication profile not found"));
 
-        // 3. Extract the underlying user profile entity
-        UserS userProfile = userLoginRecord.getUserS();
-        if (userProfile == null) {
-            throw new RuntimeException("No user profile connected to this login account");
-        }
-
-        // 4. Convert the entity into your JobUsersDto to keep network traffic clean
+        // 4. Convert the entity directly into your JobUsersDto (No nested mapping needed)
         JobUsersDto dto = new JobUsersDto();
         dto.setId(userProfile.getUserId());
         dto.setName(userProfile.getName());

@@ -9,15 +9,24 @@ import java.util.List;
 public class UserS {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long userId;
+    private Long userId;
+    private String password;
 
-    String name;
+    private String name;
     @Column(unique = true)
-    String email;
+    private String email;
     @ElementCollection
     private List<String> skills;
 
     public UserS() {
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Long getUserId() {
@@ -44,7 +53,7 @@ public class UserS {
         this.skills = skills;
     }
 
-    // Inside UserS.java — Add these methods if they are missing
+
     public String getEmail() {
         return email;
     }
