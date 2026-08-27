@@ -34,7 +34,7 @@ public class LoginService {
         );
 
         // 3. Fetch the record from the database using the instance variable and correct method name
-        UserS userProfile = registerRepo.findByUserSEmail(email)
+        UserS userProfile = registerRepo.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User authentication profile not found"));
 
         // 4. Convert the entity directly into your JobUsersDto (No nested mapping needed)
