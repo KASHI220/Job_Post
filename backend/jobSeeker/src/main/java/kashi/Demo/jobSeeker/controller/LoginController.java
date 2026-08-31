@@ -2,7 +2,6 @@ package kashi.Demo.jobSeeker.controller;
 
 import kashi.Demo.jobSeeker.dto.JobUsersDto;
 import kashi.Demo.jobSeeker.dto.UserLoginDto;
-import kashi.Demo.jobSeeker.entity.UserLogin;
 import kashi.Demo.jobSeeker.service.LoginService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

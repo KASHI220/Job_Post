@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class LoginService {
 
     private final AuthenticationManager authenticationManager;
-    private final RegisterRepo registerRepo; // Marked as private for proper encapsulation
+    private final RegisterRepo registerRepo;
 
     public LoginService(AuthenticationManager authenticationManager, RegisterRepo registerRepo) {
         this.authenticationManager = authenticationManager;
@@ -21,23 +21,22 @@ public class LoginService {
 
     public JobUsersDto login(UserLoginDto loginRequest) {
 
-        // 1. Safety check to ensure incoming JSON includes required credentials
+
         if (loginRequest.getPassword() == null || loginRequest.getEmail() == null) {
             throw new RuntimeException("Email and password credentials are missing from request payload");
         }
 
         String email = loginRequest.getEmail();
 
-        // 2. Perform standard authentication checks using your CustomUserDetailsService
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, loginRequest.getPassword())
         );
 
-        // 3. Fetch the record from the database using the instance variable and correct method name
+
         UserS userProfile = registerRepo.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User authentication profile not found"));
 
-        // 4. Convert the entity directly into your JobUsersDto (No nested mapping needed)
         JobUsersDto dto = new JobUsersDto();
         dto.setId(userProfile.getUserId());
         dto.setName(userProfile.getName());

@@ -1,48 +1,35 @@
 package kashi.Demo.jobSeeker.security;
 
-import kashi.Demo.jobSeeker.entity.UserLogin;
-import kashi.Demo.jobSeeker.repository.LoginRepository;
+import kashi.Demo.jobSeeker.entity.UserS;
+import kashi.Demo.jobSeeker.repository.RegisterRepo;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final LoginRepository loginRepository;
+    private final RegisterRepo registerRepo;
 
-    // Constructor injection is highly recommended over field-level @Autowired for cleaner testing
-    public CustomUserDetailsService(LoginRepository loginRepository) {
-        this.loginRepository = loginRepository;
+    public CustomUserDetailsService(RegisterRepo registerRepo) {
+        this.registerRepo = registerRepo;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username)
+            throws UsernameNotFoundException {
 
-        // Use the updated relation traversal query method we set up earlier
-        Optional<UserLogin> userOptional = loginRepository.findByUserSEmail(username);
+        UserS user = registerRepo.findByEmail(username)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException(
+                                "User not found with email: " + username
+                        ));
 
-        if (userOptional.isEmpty()) {
-            throw new UsernameNotFoundException("User not found with email: " + username);
-        }
-
-        UserLogin loginUser = userOptional.get();
-
-        // Safe extraction of the email string from the associated profile entity
-        if (loginUser.getUserS() == null) {
-            throw new UsernameNotFoundException("Authentication record has no connected profile mapping");
-        }
-
-        String userEmail = loginUser.getUserS().getEmail();
-
-        // Build Spring Security's native UserDetails container
-        return User.withUsername(userEmail)
-                .password(loginUser.getPassword())
-                .authorities("USER") // Required by newer Spring Security versions to prevent runtime errors
+        return User.withUsername(user.getEmail())
+                .password(user.getPassword())
+                .authorities("USER")
                 .build();
     }
 }

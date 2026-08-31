@@ -10,10 +10,10 @@ public class UserS {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
+    @Column(nullable = false)
     private String password;
-
     private String name;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
     @ElementCollection
     private List<String> skills;
