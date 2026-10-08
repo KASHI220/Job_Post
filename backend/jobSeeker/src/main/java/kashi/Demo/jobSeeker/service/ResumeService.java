@@ -1,5 +1,6 @@
 package kashi.Demo.jobSeeker.service;
 
+import kashi.Demo.jobSeeker.ai.AiService;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -10,6 +11,12 @@ import java.io.IOException;
 
 @Service
 public class ResumeService {
+
+    private final AiService aiService;
+
+    public ResumeService(AiService aiService) {
+        this.aiService = aiService;
+    }
 
     public String extractText(MultipartFile file) {
 
@@ -28,7 +35,9 @@ public class ResumeService {
 
                 PDFTextStripper stripper = new PDFTextStripper();
 
-                return stripper.getText(document);
+                String resumeText = stripper.getText(document);
+
+                return aiService.extractResumeData(resumeText);
             }
 
         } catch (IOException e) {
