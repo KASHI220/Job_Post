@@ -37,4 +37,32 @@ public class AiService {
 
         return response.text();
     }
+    public String extractResumeData(String resumeText) {
+
+        String prompt = """
+            Extract information from the following resume.
+
+            Return ONLY valid JSON in exactly this format:
+
+            {
+              "skills": ["skill1", "skill2"],
+              "experienceYears": 0,
+              "education": "education details"
+            }
+
+            If experience is not mentioned, use 0.
+            If education is not mentioned, use an empty string.
+
+            Resume:
+            """ + resumeText;
+
+        GenerateContentResponse response =
+                client.models.generateContent(
+                        "gemini-3.5-flash-lite",
+                        prompt,
+                        null
+                );
+
+        return response.text();
+    }
 }
