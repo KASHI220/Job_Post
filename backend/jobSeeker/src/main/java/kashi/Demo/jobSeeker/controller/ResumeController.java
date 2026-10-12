@@ -1,4 +1,6 @@
 package kashi.Demo.jobSeeker.controller;
+
+import kashi.Demo.jobSeeker.dto.ResumeDataDto;
 import kashi.Demo.jobSeeker.service.ResumeService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +21,12 @@ public class ResumeController {
             value = "/upload",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public ResponseEntity<String> uploadResume(
+    public ResponseEntity<ResumeDataDto> uploadResume(
             @RequestParam("file") MultipartFile file) {
 
-        String text = resumeService.extractText(file);
+        ResumeDataDto resumeData =
+                resumeService.extractResumeData(file);
 
-        return ResponseEntity.ok(text);
+        return ResponseEntity.ok(resumeData);
     }
 }
