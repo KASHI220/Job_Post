@@ -8,6 +8,9 @@ public class ResumeDataDto {
         private int experienceYears;
         private String education;
 
+    public ResumeDataDto() {
+    }
+
     public List<String> getSkills() {
         return skills;
     }
